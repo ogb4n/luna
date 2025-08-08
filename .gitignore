@@ -1,0 +1,5 @@
+config/settings.py
+core/__pycache__
+utils/__pycache__
+ai/__pycache__
+voice/__pycache__
