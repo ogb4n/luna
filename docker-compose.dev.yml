@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  luna-bot-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: luna-voice-bot-dev
+    restart: "no"
+    
+    # Development environment
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app
+      - DEBUG=1
+    
+    # Volumes for development (live code reload)
+    volumes:
+      - .:/app:rw
+      - /app/__pycache__
+      - /app/*/__pycache__
+    
+    # Port mapping for debugging
+    ports:
+      - "8000:8000"
+    
+    # Interactive mode
+    stdin_open: true
+    tty: true
+    
+    # Override command for development
+    command: ["python", "-u", "main.py"]
+    
+    # Network
+    network_mode: bridge
+    
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "1"
