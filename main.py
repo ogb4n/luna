@@ -9,7 +9,8 @@ Features natural conversation memory, SSML support, and high-quality audio proce
 import sys
 import os
 
-# Add project root to Python path
+import discord
+
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from core.bot import LunaBot
@@ -35,8 +36,14 @@ def main():
         
     except KeyboardInterrupt:
         print("\n👋 Bot stopped by user")
+    except discord.errors.LoginFailure:
+        print("❌ Discord token is invalid or expired!")
+        print("🔧 Please update your token using: python update_token.py")
+        sys.exit(1)
     except Exception as e:
         print(f"❌ Fatal error: {e}")
+        if "token" in str(e).lower():
+            print("🔧 This looks like a token issue.")
         sys.exit(1)
 
 if __name__ == "__main__":

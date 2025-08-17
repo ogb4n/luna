@@ -17,17 +17,17 @@ class TextOptimizer:
             'y\'a': 'il y a'
         }
         
-        # Phonetic corrections for young slang in voice synthesis
+        # Phonetic corrections for young slang in voice synthesis + fluidity optimizations
         self.phonetic_corrections = {
             'wsh': 'wesh',
             'pk': 'pourquoi',
             'tkt': "t'inquiète",
             'oklm': 'au calme',
-            'mdr': 'mdr',
-            'ptdr': 'ptdr',
+            'mdr': 'mort de rire',
+            'ptdr': 'pété de rire',
             'jsp': 'je sais pas',
             'jpp': 'j\'en peux plus',
-            'bg': 'bg',
+            'bg': 'beau gosse',
             'meuf': 'meuf',
             'mec': 'mec',
             'frérot': 'frérot',
@@ -44,7 +44,12 @@ class TextOptimizer:
             'sa dit quoi': 'ça dit quoi',
             'tes chaud': "t'es chaud",
             'tes bizarre': "t'es bizarre",
-            'tes mystérieux': "t'es mystérieux"
+            'tes mystérieux': "t'es mystérieux",
+            # Fluidity optimizations - replace hard consonant clusters
+            'exactement': 'exactement',
+            'probablement': 'sûrement',  # Easier to pronounce
+            'complètement': 'complètement',
+            'absolument': 'totalement',  # More fluid
         }
         
         self.emphasis_words = ['vraiment', 'absolument', 'complètement']
@@ -116,3 +121,37 @@ class TextOptimizer:
         </speak>'''
         
         return ssml_text
+    
+    def optimize_for_fluidity(self, text: str) -> str:
+        """Additional optimizations specifically for fluid young adult speech"""
+        
+        # Replace difficult consonant clusters with easier alternatives
+        fluidity_replacements = {
+            'exactement': 'exact',
+            'probablement': 'sûrement',
+            'évidemment': 'bien sûr',
+            'effectivement': 'en effet',
+            'particulièrement': 'surtout',
+            'spécialement': 'surtout',
+            'principalement': 'surtout',
+            'complètement': 'totalement',
+            'absolument': 'vraiment',
+            'extrêmement': 'très',
+            'incroyablement': 'super',
+            'extraordinaire': 'génial',
+        }
+        
+        for difficult, easy in fluidity_replacements.items():
+            text = text.replace(difficult, easy)
+        
+        # Add slight pauses before important words for natural rhythm
+        important_words = ['mais', 'donc', 'alors', 'puis', 'ensuite', 'après']
+        for word in important_words:
+            text = text.replace(f' {word} ', f' {word}, ')
+        
+        # Smooth out specific repeated consonants that can cause stuttering in TTS
+        # Be more careful with replacements to avoid breaking words
+        text = re.sub(r'\bll([aeiou])', r'l\1', text)  # Only at word boundaries
+        text = text.replace('vraiment vraiment', 'vraiment')  # Remove repetitions
+        
+        return text

@@ -13,12 +13,13 @@ class ConversationMemory:
             self.memory[user_id] = {
                 'messages': [],
                 'last_activity': datetime.now(),
-                'user_name': user_name
+                'user_name': user_name,
+                'server_invite_sent': False  # Track if server invite was already sent
             }
         
-        # Check if conversation is too old and should be reset
         if datetime.now() - self.memory[user_id]['last_activity'] > MEMORY_TIMEOUT:
             self.memory[user_id]['messages'] = []
+            self.memory[user_id]['server_invite_sent'] = False  # Reset invite tracking
         
         return self.memory[user_id]['messages']
     
@@ -28,7 +29,8 @@ class ConversationMemory:
             self.memory[user_id] = {
                 'messages': [],
                 'last_activity': datetime.now(),
-                'user_name': user_name
+                'user_name': user_name,
+                'server_invite_sent': False
             }
         
         # Add new exchange
@@ -69,3 +71,15 @@ class ConversationMemory:
     def get_user_response_stats(self, user_id: str) -> dict:
         """Get user's response type statistics"""
         return self.response_algorithm.get_user_stats(user_id)
+    
+    def has_server_invite_been_sent(self, user_id: str) -> bool:
+        """Check if server invite has already been sent to this user"""
+        if user_id not in self.memory:
+            return False
+        return self.memory[user_id].get('server_invite_sent', False)
+    
+    def mark_server_invite_sent(self, user_id: str):
+        """Mark that server invite has been sent to this user"""
+        if user_id in self.memory:
+            self.memory[user_id]['server_invite_sent'] = True
+            print(f"🔗 Server invite marked as sent for user {user_id}")
